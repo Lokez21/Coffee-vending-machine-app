@@ -1,4 +1,6 @@
 # When the system is run for the first time the inventory gets refilled
+from decimal import Decimal
+
 inventory = {  # to store the available resources and subtract resources every time a coffee is made
     'coffee': 1000,  # kgs
     'water': 1000,  # litres
@@ -7,9 +9,9 @@ inventory = {  # to store the available resources and subtract resources every t
 }
 
 cost = {
-    'espresso': 1.50,
-    'latte': 2.90,
-    'cappuccino': 2.75,
+    'espresso': Decimal(1.50),
+    'latte': Decimal(2.90),
+    'cappuccino': Decimal(2.75),
 }
 
 recipe = {
@@ -29,25 +31,25 @@ def check_resource(selection) -> True:  # Admin user inputs(Maintenance mode) - 
 
 # takes coins and returns change to users or if cancelled refunds the money to the users
 def process_coins(selection):
-    money_collected = 0.00
+    money_collected = Decimal(0.00)
     money_dict = {
-        0.01: 0,
-        0.02: 0,
-        0.05: 0,
-        0.10: 0,
-        0.20: 0,
-        0.50: 0,
-        1.00: 0,
-        2.00: 0,
-        5.00: 0,
-        10.00: 0,
-        20.00: 0,
-        50.00: 0,
+        Decimal(0.01): 0,
+        Decimal(0.02): 0,
+        Decimal(0.05): 0,
+        Decimal(0.10): 0,
+        Decimal(0.20): 0,
+        Decimal(0.50): 0,
+        Decimal(1.00): 0,
+        Decimal(2.00): 0,
+        Decimal(5.00): 0,
+        Decimal(10.00): 0,
+        Decimal(20.00): 0,
+        Decimal(50.00): 0,
         }
 
-    to_pay = cost[selection]
+    to_pay = Decimal(cost[selection])
     payment_session = True
-    print(f'Balance to pay: {to_pay}')
+    print(f'Balance to pay: {Decimal(to_pay)}')
     while payment_session:
         money_inserted = input(f'Insert money: ')
         # accepted money - coins / cash
@@ -64,7 +66,7 @@ def process_coins(selection):
                         value -= 1
                 break
 
-            money_inserted = float(money_inserted)
+            money_inserted = Decimal(money_inserted)
             money_dict[money_inserted] += 1
             money_collected += money_inserted
             if money_collected >= to_pay:

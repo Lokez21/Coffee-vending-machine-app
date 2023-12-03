@@ -111,12 +111,12 @@ def process_coins(selection):
                         Decimal('0.01')] > 0:
                         change[Decimal('0.01')] = round(return_balance / Decimal('0.01'), 2)
 
-                print(change)
+                    print(change)
                 break
     return payment_session
 
 # checks for inventory and prepares drink
-def prepare_drink(selection: str) -> bool:
+def prepare_drink(selection: str) -> list:
     cup = []
     for item, qty in recipe[selection].items():
         if not inventory[item] - qty < 0:

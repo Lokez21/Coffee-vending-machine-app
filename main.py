@@ -116,7 +116,7 @@ def process_coins(selection):
     return payment_session
 
 # checks for inventory and prepares drink
-def prepare_drink(selection: str) -> list:
+def prepare_drink(selection: str):
     cup = []
     for item, qty in recipe[selection].items():
         if not inventory[item] - qty < 0:

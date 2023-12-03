@@ -1,5 +1,5 @@
 # When the system is run for the first time the inventory gets refilled
-inventory = {
+inventory = {  # to store the available resources and subtract resources every time a coffee is made
     'coffee': 1000,  # kgs
     'water': 1000,  # litres
     'milk': 1000,  # litres
@@ -20,14 +20,14 @@ recipe = {
 
 
 # checks for inventory when called .report
-def check_resource(selection) -> True:     # Admin user input(Maintenance mode) - '\report']
+def check_resource(selection) -> True:  # Admin user inputs(Maintenance mode) - '\report']
     for item, recipe_value in recipe[selection].items():
         if inventory[item] - recipe_value < 0:
             return False
     return True
 
 
-# takes coins and returns change to users or if cancelled return the money to users
+# takes coins and returns change to users or if cancelled refunds the money to the users
 def process_coins(selection):
     money_collected = 0.00
     money_dict = {
@@ -55,13 +55,13 @@ def process_coins(selection):
                                   '5.00', '10.00', '20.00', '50.00', 'cancel'):
             print('Invalid input. Please enter correct values.')
         else:
-            if money_inserted == 'cancel':
+            if money_inserted == 'cancel':  # if the user cancels payment at any time
                 payment_session = False  # todo test
-                print('Payment cancelled. Returning your money.. ')
+                print('Payment cancelled.')
                 for key, value in money_dict.items():
                     while value > 0:
                         print(f'Return {key}')
-                        value -= value
+                        value -= 1
                 break
 
             money_inserted = float(money_inserted)
@@ -71,7 +71,7 @@ def process_coins(selection):
                 print('Thank you for the payment.')
                 return_balance = money_collected - to_pay
                 if return_balance > 0:
-                    print(f'Please take the change: {return_balance}')
+                    print(f'Please take the change: {round(return_balance, 2)}')
                 break
     return payment_session
 
@@ -94,59 +94,59 @@ def print_inventory():
         print(f'{item} - {value}')
 
 
-power = True
+def get_selection(user_input):
+    if user_input == '1':
+        selection = 'espresso'
+        check = check_resource(selection)
+        if check:
+            print('You have selected Espresso')
+        else:
+            selection = None
+            print('Sorry! Not enough resources to make Espresso')
+    elif user_input == '2':
+        selection = 'latte'
+        check = check_resource(selection)
+        if check:
+            print('You have selected Latte')
+        else:
+            selection = None
+            print('Sorry! Not enough resources to make Latte')
+    elif user_input == '3':
+        selection = 'cappuccino'
+        check = check_resource(selection)
+        if check:
+            print('You have selected Cappuccino')
+        else:
+            selection = None
+            print('Sorry! Not enough resources to make Cappuccino')
+    elif user_input == '.report':
+        selection = user_input
+        print_inventory()
+    elif user_input == '.off':
+        selection = user_input
+    else:
+        print('Invalid choice. Please try again. ')
+        selection = None
+    return selection
 
+
+power = True
 while power:  # System is ON
     print('-- Python Coffee Vending Machine --')
     print('Welcome. What would you like?')
-    power = True
     selection = None
 
     while selection is None:
         user_input = input('Type [1] for Espresso, [2] for Latte, [3] for Cappuccino?')
+        selection = get_selection(user_input)
 
-        if user_input == '1':
-            selection = 'espresso'
-            check = check_resource(selection)
-            if check:
-                print('You have selected Espresso')
-            else:
-                print('Sorry! Not enough resources to make Espresso')
-        elif user_input == '2':
-            selection = 'latte'
-            check = check_resource(selection)
-            if check:
-                print('You have selected Latte')
-            else:
-                print('Sorry! Not enough resources to make Latte')
-        elif user_input == '3':
-            selection = 'cappuccino'
-            check = check_resource(selection)
-            if check:
-                print('You have selected Cappuccino')
-            else:
-                print('Sorry! Not enough resources to make Cappuccino')
-        elif user_input == '.report':
-            selection = user_input
-        elif user_input == '.off':
-            selection = user_input
+        if selection == '.off':  # code is terminated, turning off for maintenance and refilling,
+            print('Shutting down...')
             power = False
-            print('Turning off!')
-        else:
-            print('Invalid choice. Please try again. ')
+            continue
 
-    if ~power:  # code is terminated, turning off for maintenance and refilling,
-        print('Shutting down...')
-        break
-
-    if selection == '.report':  # checks the resources remaining
-        print_inventory()
-
-    if selection in ['espresso', 'latte', 'cappuccino'] and check:
-        payment = process_coins(selection)
-        if payment:
-            drink = prepare_drink(selection)
-            print(f'Please grab your {selection}({drink}). Enjoy.\n\n')
-        else:
-            print()
-
+        if selection in ['espresso', 'latte', 'cappuccino']:
+            payment = process_coins(selection)
+            if payment:
+                drink = prepare_drink(selection)
+                print(f'Please grab your {selection}(Ingredients: {drink}). Enjoy.\n\n')
